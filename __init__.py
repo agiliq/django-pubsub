@@ -1,20 +1,17 @@
 from django.db.models.base import ModelBase
 from django.db.models.signals import post_save
 
-from pubsub.utils import publish, create_node
+from pubsub.utils import publish
 
 class PubSub(object):
     """
     Manages models to be published
 
-    registry is a dict of nodes mapped to
-    models. Nodes are used in pubsub server
-    to classify different event sources.
-    Each registered model gets an exclusive
-    node on the pubsub server
+    registry is a list of registered models
     """
     def __init__(self, registry=None):
-        self.registry =  registry or {}
+        self.registry = registry or []
+        self.registry = set(self.registry)
         
     def register(self, model_or_iterable):
         """
@@ -23,19 +20,7 @@ class PubSub(object):
         if isinstance(model_or_iterable, ModelBase):
             model_or_iterable = [model_or_iterable]
         for model in model_or_iterable:
-            node = make_node(model)
-            self.registry[node] =  model
-            create_node(node)
+            self.registry.add(model)
             post_save.connect(publish, sender=model)
-
-def make_node(model):
-    """
-    Makes a pubsub node from a model
-
-    E.g. node for 'blog.models.Entry'
-    would be '/blog/models/Entry'
-    """
-    return "/%s/%s" %(model.__module__.replace('.', '/'),
-            model.__name__)
 
 pubsub = PubSub()

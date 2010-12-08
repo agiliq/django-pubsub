@@ -15,7 +15,9 @@ class PubSubTest(TestCase):
         """
         Test that models are registered with pubsub
         """
-        pubsub.register([Blog, BlogRoll])
+        models = [Blog, BlogRoll]
+        pubsub.register(models)
+        self.assertTrue(set(models).issubset(pubsub.registry))
 
     def test_publish(self):
         """

@@ -7,10 +7,15 @@ def publish(sender, instance, created, **kwargs):
     """
     Publishes model to XMPP PubSub Node
     """
-    print "publishing message %s %s" %(instance, created)
+    print "publishing message %s %s %s" %(instance, created, make_node(sender))
 
-def create_node(node):
+def make_node(model):
     """
-    Creates a pubsub node on the xmpp server
+    Makes a pubsub node from a model
+
+    E.g. node for 'blog.models.Entry'
+    would be '/blog/models/Entry'
     """
-    print "creating pubsub node for %s" %node
+    return "/%s/%s" %(model.__module__.replace('.', '/'),
+            model.__name__)
+
