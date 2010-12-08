@@ -20,4 +20,4 @@ def create_node(node):
     """
     Creates a pubsub node on the xmpp server
     """
-    pass
+    print "creating pubsub node for %s" %node

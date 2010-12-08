@@ -1,12 +1,16 @@
 from django.db.models.base import ModelBase
 
+from pubsub.utils import create_node
+
 class PubSub(object):
     """
     Manages models to be published
 
     registry is a dict of nodes mapped to
     models. Nodes are used in pubsub server
-    to classify diffrerent event sources
+    to classify different event sources.
+    Each registered model gets an exclusive
+    node on the pubsub server
     """
     def __init__(self, registry=None):
         self.registry =  registry or {}
@@ -20,15 +24,16 @@ class PubSub(object):
         for model in model_or_iterable:
             node = make_node(model)
             self.registry[node] =  model
+            create_node(node)
 
 def make_node(model):
     """
     Makes a pubsub node from a model
 
     E.g. node for 'blog.models.Entry'
-    would be 'blog/models/Entry'
+    would be '/blog/models/Entry'
     """
-    return "%s/%s" %(model.__module__.replace('.', '/'),
+    return "/%s/%s" %(model.__module__.replace('.', '/'),
             model.__name__)
 
 pubsub = PubSub()
