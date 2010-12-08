@@ -1,6 +1,7 @@
 from django.db.models.base import ModelBase
+from django.db.models.signals import post_save
 
-from pubsub.utils import create_node
+from pubsub.utils import publish, create_node
 
 class PubSub(object):
     """
@@ -25,6 +26,7 @@ class PubSub(object):
             node = make_node(model)
             self.registry[node] =  model
             create_node(node)
+            post_save.connect(publish, sender=model)
 
 def make_node(model):
     """

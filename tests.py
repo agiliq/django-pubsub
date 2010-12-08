@@ -17,3 +17,9 @@ class PubSubTest(TestCase):
         """
         pubsub.register([Blog, BlogRoll])
 
+    def test_publish(self):
+        """
+        Test message is published when registered models
+        are created/updated
+        """
+        Blog.objects.create(title="Spam Blog", tag_line="This is BlogSpam")
