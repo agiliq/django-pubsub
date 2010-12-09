@@ -4,6 +4,9 @@ from django.conf import settings
 import xmpp
 import time
 
+class XMPPException(Exception):
+    pass
+
 def publish(sender, instance, created, **kwargs):
     """
     Publishes model to XMPP PubSub Node
@@ -23,7 +26,23 @@ def publish(sender, instance, created, **kwargs):
     instance_node = xmpp.simplexml.NodeBuilder(instance_xml).getDom()
     pub_iq.T.pubsub.T.publish.T.item.T.entry.addChild(node=instance_node)
     print pub_iq
+    send_message(pub_iq)
 
+def send_message(msg):
+    """
+    Sends a IM `msg` xmpppy
+
+    msg should be a xmpp.protocol.Message instance
+    """
+    from_jid = xmpp.protocol.JID(getattr(settings, 'XMPP_JID'))
+    passwd = getattr(settings, 'XMPP_PASSWORD')
+
+    client = xmpp.Client(from_jid.getDomain(), debug=[])
+    if client.connect():
+        if client.auth(from_jid.getNode(), passwd):
+            client.send(msg)
+            time.sleep(1)
+        client.disconnect()
 
 def make_node(model):
     """
