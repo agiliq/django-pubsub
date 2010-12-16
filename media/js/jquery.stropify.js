@@ -1,4 +1,4 @@
-(function($) {
+//(function($) {
 
     PubSubClient.prototype = {
         
@@ -18,8 +18,9 @@
          */
         connect: function(username, password) {
             this._conn = new Strophe.Connection(settings.BOSH_SERVICE);
+            this._jid = username + '@' + settings.DOMAIN + '/' + settings.RESOURCE;
             if ( typeof(username) != 'undefined' &&  username.length) {
-                this._conn.connect(username + '@' + settings.DOMAIN, password, this._on_connect(this));
+                this._conn.connect(this._jid, password, this._on_connect(this));
                 this._nick = username;
             }
             else {
@@ -52,23 +53,32 @@
          *subscribes user to given node
          */
         subscribe: function(node) {
-            return this._conn.pubsub.subscribe(this._nick + "@" + settings.DOMAIN, settings.PUBSUB_SERVICE, 
-                    node, {}, this._handle_event(this), this._handle_event(this));
+            return this._conn.pubsub.subscribe(this._jid, settings.PUBSUB_SERVICE, 
+                    node, {}, this._handle_event, this._handle_event);
         },
+
+
+        /*
+         *publishes items to node
+         */
+        publish: function(node, items) {
+            return this._conn.pubsub.publish(this._jid, settings.PUBSUB_SERVICE,
+                    node, items, this._handle_event);
+        },
+
 
         /*
          *handles pubsub event
          */
-        _handle_event: function(context) {
-            return function(stanza_xml) {
-                console.log(stanza_xml);
-            };
+        _handle_event: function(stanza_xml) {
+            console.log(stanza_xml);
+            return true;
         },
 
         /* callback fired before disconnect */
         _on_disconnect: function(status) {
-            this.leave();
-        },
+            //this.leave();
+        }
 
     };
 
@@ -83,14 +93,14 @@
         var connection = that.connect(options.username, options.password);
     }
 
-    // TODO: return jquery element like a good plugin
+    //// TODO: return jquery element like a good plugin
 
-    $.fn.stropify = function(opts) {
-        var defaults = {
-        };
-        var options = $.extend(defaults, opts);
-        return new PubSubClient(options);
-    };
+    //$.fn.stropify = function(opts) {
+        //var defaults = {
+        //};
+        //var options = $.extend(defaults, opts);
+        //return new PubSubClient(options);
+    //};
 
-})(jQuery);
+//})(jQuery);
 
