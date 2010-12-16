@@ -1,19 +1,19 @@
 PubSubClient.prototype = {
     
     /* connect to the xmpp server
-        *
-        * params:
-        *   
-        *   username: username of xmpp account without domain
-        *   password: plaintext password of the account
-        *
-        * for anonymous logins
-        *
-        *   nick: the nickname to be displayed after anoymous login
-        *
-        * returns:
-        *   Strophe.Connection object
-        */
+    *
+    * params:
+    *   
+    *   username: username of xmpp account without domain
+    *   password: plaintext password of the account
+    *
+    * for anonymous logins
+    *
+    *   nick: the nickname to be displayed after anoymous login
+    *
+    * returns:
+    *   Strophe.Connection object
+    */
     connect: function(username, password) {
         this._conn = new Strophe.Connection(settings.BOSH_SERVICE);
         this._jid = username + '@' + settings.DOMAIN + '/' + settings.RESOURCE;
@@ -48,30 +48,33 @@ PubSubClient.prototype = {
     },
 
     /*
-        *publishes items to node
-        */
+    *publishes items to node
+    */
     publish: function(node, items) {
         return this._conn.pubsub.publish(this._jid, settings.PUBSUB_SERVICE,
                 node, items, this._handle_event(this));
     },
 
-
     /*
-        *subscribes user to given node
-        */
+    *subscribes user to given node
+    */
     subscribe: function(node) {
         return this._conn.pubsub.subscribe(this._jid, settings.PUBSUB_SERVICE, 
                 node, {}, this._handle_event(this), this._handle_event(this));
     },
 
-
     /*
-        *handles pubsub event
-        */
+    *handles pubsub event
+    */
     _handle_event: function(context) {
         return function(stanza_xml) {
-            console.log(stanza_xml);
-            context._last_xml = stanza_xml;
+            if (settings.DEBUG) {
+                console.log(stanza_xml);
+            }
+            entry = $(stanza_xml).find("entry");
+            if (entry.length) {
+                context.updates.push(entry);
+            }
             return true;
         };
     },
@@ -84,11 +87,11 @@ PubSubClient.prototype = {
 };
 
 /* PubSubClient class that initializes 
-    * event handlers, connects to the server
-    */
+* event handlers, connects to the server
+*/
 function PubSubClient(options) {
-    var that = this;
     this.options = options;
-    var connection = that.connect(options.username, options.password);
+    this.updates = new Array();
+    var connection = this.connect(options.username, options.password);
 }
 
