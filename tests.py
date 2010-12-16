@@ -6,16 +6,17 @@ Replace these with more appropriate tests for your application.
 """
 
 from django.test import TestCase
+from django.contrib.auth.models import User
 
 from pubsub import pubsub
-from blogango.models import Blog, BlogRoll
+from blogango.models import BlogEntry, BlogRoll
 
 class PubSubTest(TestCase):
     def test_registration(self):
         """
         Test that models are registered with pubsub
         """
-        models = [Blog, BlogRoll]
+        models = [BlogEntry, BlogRoll]
         pubsub.register(models)
         self.assertTrue(set(models).issubset(pubsub.registry))
 
@@ -24,4 +25,5 @@ class PubSubTest(TestCase):
         Test message is published when registered models
         are created/updated
         """
-        Blog.objects.create(title="Spam Blog", tag_line="This is BlogSpam")
+        spiderman = User.objects.create(username="spiderman", password="mary_jane")
+        BlogEntry.objects.create(title="Spam Blog", text="This is BlogSpam", created_by=spiderman)
