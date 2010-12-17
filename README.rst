@@ -1,6 +1,13 @@
+Overview:
+=========
+
 django-pubsub allows you to create Twitter like real-time updates for your models.
 
-django-pubsub is based on XMPP pubsub implementation (refer to `XEP 0060 <http://xmpp.org/extensions/xep-0060.html>`_ for details).
+PubSub is a way to publish and subscribe to events over XMPP. Instead of intensive polling,
+it relies on the publisher pushing the information and the client subscribing and receiving the
+events.
+
+django-pubsub makes use of the XMPP pubsub implementation (refer to `XEP 0060 <http://xmpp.org/extensions/xep-0060.html>`_ for details).
 
 You will need:
 
@@ -65,3 +72,5 @@ A simple event callback would be::
 The callback ``event_cb`` receives new updates. ``entry`` consists of the payload sent by 
 the publisher enclosed in a <entry> tag.
 
+
+*django-pubsub is web scale*
