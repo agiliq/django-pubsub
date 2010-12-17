@@ -42,7 +42,7 @@ PubSubClient.prototype = {
                 console.log("status is ", status);
             }
                 if (status == Strophe.Status.CONNECTED) {
-                context.subscribe(context.options.node);
+                context.subscribe(context.options.node); // FIXME: subscribe only once
             }
         };
     },
