@@ -74,6 +74,7 @@ PubSubClient.prototype = {
             entry = $(stanza_xml).find("entry");
             if (entry.length) {
                 context.updates.push(entry);
+                context.options.event_cb(entry);
             }
             return true;
         };
@@ -81,13 +82,30 @@ PubSubClient.prototype = {
 
     /* callback fired before disconnect */
     _on_disconnect: function(status) {
-        //this.leave();
     }
 
 };
 
 /* PubSubClient class that initializes 
 * event handlers, connects to the server
+*
+* Login Options:
+*
+* username: xmpp account username (without domain)
+* password: xmpp account password
+*
+* or 
+*
+* nick: nick for anonymous login
+*
+*
+* PUBSUB Options:
+*
+* node: the node to subscribe and listen for updates
+* event_cb: callback fired when an event occurs in the 
+* subscribed node. Takes a single argument which is the
+* payload enclosed in <entry> xml element
+*
 */
 function PubSubClient(options) {
     this.options = options;
