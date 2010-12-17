@@ -11,7 +11,6 @@ def publish(sender, instance, created, **kwargs):
     """
     Publishes model to XMPP PubSub Node
     """
-    #print "publishing message %s %s %s" %(instance, created, make_node(sender))
     pub_iq = xmpp.protocol.Iq(typ='set',
                            to=getattr(settings, 'XMPP_PUBSUB_HOST'),
                            attrs={'id': str(instance.id)})
@@ -30,7 +29,7 @@ def publish(sender, instance, created, **kwargs):
 
 def send_message(msg):
     """
-    Sends a IM `msg` xmpppy
+    Sends a IM `msg` using xmpppy
 
     msg should be a xmpp.protocol.Message instance
     """
@@ -48,9 +47,9 @@ def make_node(model):
     """
     Makes a pubsub node from a model
 
-    E.g. node for 'blog.models.Entry'
-    would be '/blog/models/Entry'
+    E.g. node for 'blog.models.Post'
+    would be '/blog/Post'
     """
-    return "/%s/%s" %(model.__module__.replace('.', '/'),
+    return "/%s/%s" %(model.__module__.split(".")[0],
             model.__name__)
 
