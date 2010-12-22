@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>django-pubsub Demo</title>
+
+    <style type="text/css">
+        .hidden {
+            display:none;
+        }
+    </style>
+
+    <script type="text/javascript" src="{{ MEDIA_URL }}demo/js/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}demo/js/jquery-ui-1.8.7.custom.min.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}demo/js/jquery.tmpl.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}demo/js/jquery.form.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}pubsub/js/strophe.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}pubsub/js/strophe.pubsub.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}pubsub/js/pubsub.settings.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}pubsub/js/pubsub.client.js"></script>
+
+    <script type="text/javascript">
+        function event_cb(entry, pubsub) {
+            console.log(entry.text());
+            eval("context="+entry.text());
+            $("#template").tmpl(context).prependTo($("ul"));
+
+            if (!pubsub.focus) {
+                pubsub.unread++;
+                title = document.title;
+                if (title.indexOf("[") == -1) {
+                    title = "[" + pubsub.unread + "]  " + document.title;
+                    $("#updates_template").tmpl({'count': pubsub.unread}).appendTo($("div.updates"));
+                }
+                else {
+                    title = title.replace(pubsub.unread-1, pubsub.unread);
+                }
+                document.title = title;
+            }
+        }
+        pubsub = new PubSubClient({
+                'nick': '{{ unique_nick }}',
+                'node': '/demo/Status',
+                'event_cb': event_cb
+        });
+
+
+        $(document).ready(function() {
+            $("form").ajaxForm({
+                'resetForm': true
+            });
+        });
+
+        function showUpdates(x) {
+            $('.hidden').effect("highlight", 5000);
+            $(x).hide();
+            document.title = document.title.replace(/ *\[[^)]*\] */g, "");
+        }
+
+    </script>
+
+    <script id="template" type="text/x-jquery-tmpl">
+        <li class="hidden">
+            ${ nick }
+            <br />
+            ${ message }
+            <br />
+            ${ time }
+        </li>
+    </script>
+
+    <script id="updates_template" type="text/x-jquery-tmpl">
+        <a href="javascript:void(0);" onclick="showUpdates(this);">${ count } new posts</a>
+    </script>
+</head>
+<body>
+
+<div class="updates">
+
+</div>
+
+<ul>
+    {% for status in object_list %}
+    <li>
+        {{ status.nick }}
+        <br />
+        {{ status.message }}
+        <br />
+        {{ status.time }}
+    </li>
+    {% endfor %}
+</ul>
+
+<form action="{% url pubsub_status_new %}" method="POST">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+    <input type="submit" name="post" value="Post">
+</form>
+
+</body>
+</html>
