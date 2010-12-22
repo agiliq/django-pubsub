@@ -7,25 +7,35 @@ import time
 class XMPPException(Exception):
     pass
 
-def publish(sender, instance, created, **kwargs):
+def handle_post_save(sender, instance, created, **kwargs):
     """
-    Publishes model to XMPP PubSub Node
+    handles the post_save signal of registered models
+    to publish messages
     """
-    pub_iq = xmpp.protocol.Iq(typ='set',
-                           to=getattr(settings, 'XMPP_PUBSUB_HOST'),
-                           attrs={'id': str(instance.id)})
-    pub_iq.T.pubsub = ""
-    pub_iq.T.pubsub.namespace = xmpp.protocol.NS_PUBSUB
-    pub_iq.T.pubsub.T.publish = ""
-    pub_iq.T.pubsub.T.publish['node'] = make_node(sender)
-    pub_iq.T.pubsub.T.publish.T.item = ""
-    pub_iq.T.pubsub.T.publish.T.item.T.entry = ""
-    pub_iq.T.pubsub.T.publish.T.item.T.entry.namespace = 'http://www.w3.org/2005/Atom'
+    pub_iq = build_iq(make_node(sender), "")
     instance_xml = serializers.serialize('xml', [instance, ])
     instance_node = xmpp.simplexml.NodeBuilder(instance_xml).getDom()
     pub_iq.T.pubsub.T.publish.T.item.T.entry.addChild(node=instance_node)
-    print pub_iq
     send_message(pub_iq)
+
+def publish(node, payload):
+    """
+    Publishes model to XMPP PubSub Node
+    """
+    iq = build_iq(node, payload)
+    send_message(iq)
+
+def build_iq(node, payload):
+    iq = xmpp.protocol.Iq(typ='set',
+            to=getattr(settings, 'XMPP_PUBSUB_HOST'))
+    iq.T.pubsub = ""
+    iq.T.pubsub.namespace = xmpp.protocol.NS_PUBSUB
+    iq.T.pubsub.T.publish = ""
+    iq.T.pubsub.T.publish['node'] = node
+    iq.T.pubsub.T.publish.T.item = ""
+    iq.T.pubsub.T.publish.T.item.T.entry = payload
+    iq.T.pubsub.T.publish.T.item.T.entry.namespace = 'http://www.w3.org/2005/Atom'
+    return iq
 
 def send_message(msg):
     """
@@ -36,6 +46,7 @@ def send_message(msg):
     from_jid = xmpp.protocol.JID(getattr(settings, 'XMPP_JID'))
     passwd = getattr(settings, 'XMPP_PASSWORD')
 
+    print msg
     client = xmpp.Client(from_jid.getDomain(), debug=[])
     if client.connect():
         if client.auth(from_jid.getNode(), passwd):
