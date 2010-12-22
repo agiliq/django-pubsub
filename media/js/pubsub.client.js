@@ -75,18 +75,7 @@ PubSubClient.prototype = {
             entry = $(stanza_xml).find("entry");
             if (entry.length) {
                 context.updates.push(entry);
-                context.options.event_cb(entry);
-                if (!context.focus) {
-                    context.unread++;
-                    title = document.title;
-                    if (title.indexOf("[") == -1) {
-                        title = "[" + context.unread + "]  " + document.title;
-                    }
-                    else {
-                        title = title.replace(context.unread-1, context.unread);
-                    }
-                    document.title = title;
-                }
+                context.options.event_cb(entry, context);
             }
             return true;
         };
