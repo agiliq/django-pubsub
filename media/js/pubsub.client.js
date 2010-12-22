@@ -16,7 +16,7 @@ PubSubClient.prototype = {
     */
     connect: function(username, password) {
         this._conn = new Strophe.Connection(settings.BOSH_SERVICE);
-        this._jid = username + '@' + settings.DOMAIN + '/' + settings.RESOURCE;
+        this._jid = this._nick + '@' + settings.DOMAIN + '/' + settings.RESOURCE;
         if ( typeof(username) != 'undefined' &&  username.length) {
             this._conn.connect(this._jid, password, this._on_connect(this));
             this._nick = username;
@@ -38,6 +38,7 @@ PubSubClient.prototype = {
     /* callback fired when connection status changes */
     _on_connect: function(context) {
         return function (status, condition) {
+            context._jid = context._conn.jid;
             if (settings.DEBUG) {
                 console.log("status is ", status);
             }
@@ -75,6 +76,17 @@ PubSubClient.prototype = {
             if (entry.length) {
                 context.updates.push(entry);
                 context.options.event_cb(entry);
+                if (!context.focus) {
+                    context.unread++;
+                    title = document.title;
+                    if (title.indexOf("[") == -1) {
+                        title = "[" + context.unread + "]  " + document.title;
+                    }
+                    else {
+                        title = title.replace(context.unread-1, context.unread);
+                    }
+                    document.title = title;
+                }
             }
             return true;
         };
@@ -82,7 +94,10 @@ PubSubClient.prototype = {
 
     /* callback fired before disconnect */
     _on_disconnect: function(status) {
-    }
+    },
+
+    focus: true, /* whether the window has focus */
+    unread: 0 /* count of unread messages */
 
 };
 
@@ -111,5 +126,18 @@ function PubSubClient(options) {
     this.options = options;
     this.updates = new Array();
     var connection = this.connect(options.username, options.password);
+
+    $(window).blur(function(context) {
+        return function() {
+            context.focus = false;
+        };
+    }(this));
+
+    $(window).focus(function(context) {
+        return function() {
+            context.focus = true;
+        };
+    }(this));
+
 }
 
