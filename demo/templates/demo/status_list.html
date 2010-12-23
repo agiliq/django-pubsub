@@ -4,12 +4,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>django-pubsub Demo</title>
 
-    <style type="text/css">
-        .hidden {
-            display:none;
-        }
-    </style>
-
     <script type="text/javascript" src="{{ MEDIA_URL }}demo/js/jquery-1.4.4.min.js"></script>
     <script type="text/javascript" src="{{ MEDIA_URL }}demo/js/jquery-ui-1.8.7.custom.min.js"></script>
     <script type="text/javascript" src="{{ MEDIA_URL }}demo/js/jquery.tmpl.js"></script>
@@ -23,14 +17,13 @@
         function event_cb(entry, pubsub) {
             console.log(entry.text());
             eval("context="+entry.text());
-            $("#template").tmpl(context).prependTo($("ul"));
+            $("#template").tmpl(context).prependTo($("ul")).effect("highlight", 5000);
 
             if (!pubsub.focus) {
                 pubsub.unread++;
                 title = document.title;
                 if (title.indexOf("[") == -1) {
                     title = "[" + pubsub.unread + "]  " + document.title;
-                    $("#updates_template").tmpl({'count': pubsub.unread}).appendTo($("div.updates"));
                 }
                 else {
                     title = title.replace(pubsub.unread-1, pubsub.unread);
@@ -51,16 +44,15 @@
             });
         });
 
-        function showUpdates(x) {
-            $('.hidden').effect("highlight", 5000);
-            $(x).hide();
+        /* resore title on focus */
+        $(window).focus(function() {
             document.title = document.title.replace(/ *\[[^)]*\] */g, "");
-        }
+        });
 
     </script>
 
     <script id="template" type="text/x-jquery-tmpl">
-        <li class="hidden">
+        <li>
             ${ nick }
             <br />
             ${ message }
@@ -69,15 +61,8 @@
         </li>
     </script>
 
-    <script id="updates_template" type="text/x-jquery-tmpl">
-        <a href="javascript:void(0);" onclick="showUpdates(this);">${ count } new posts</a>
-    </script>
 </head>
 <body>
-
-<div class="updates">
-
-</div>
 
 <ul>
     {% for status in object_list %}

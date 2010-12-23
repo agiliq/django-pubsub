@@ -125,6 +125,8 @@ function PubSubClient(options) {
     $(window).focus(function(context) {
         return function() {
             context.focus = true;
+            /* reset counter */
+            context.unread = 0;
         };
     }(this));
 
