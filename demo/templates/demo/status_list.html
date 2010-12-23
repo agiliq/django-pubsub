@@ -49,6 +49,10 @@
             document.title = document.title.replace(/ *\[[^)]*\] */g, "");
         });
 
+        $(window).unload(function() {
+            pubsub.disconnect();
+        });
+
     </script>
 
     <script id="template" type="text/x-jquery-tmpl">
