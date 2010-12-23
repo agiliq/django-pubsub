@@ -8,6 +8,7 @@
     <script type="text/javascript" src="{{ MEDIA_URL }}demo/js/jquery-ui-1.8.7.custom.min.js"></script>
     <script type="text/javascript" src="{{ MEDIA_URL }}demo/js/jquery.tmpl.js"></script>
     <script type="text/javascript" src="{{ MEDIA_URL }}demo/js/jquery.form.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}demo/js/jquery.linkify.js"></script>
     <script type="text/javascript" src="{{ MEDIA_URL }}pubsub/js/strophe.js"></script>
     <script type="text/javascript" src="{{ MEDIA_URL }}pubsub/js/strophe.pubsub.js"></script>
     <script type="text/javascript" src="{{ MEDIA_URL }}pubsub/js/pubsub.settings.js"></script>
@@ -17,7 +18,7 @@
         function event_cb(entry, pubsub) {
             console.log(entry.text());
             eval("context="+entry.text());
-            $("#template").tmpl(context).prependTo($("ul")).effect("highlight", 5000);
+            $("#template").tmpl(context).linkify().prependTo($("ul")).effect("highlight", 5000);
 
             if (!pubsub.focus) {
                 pubsub.unread++;
