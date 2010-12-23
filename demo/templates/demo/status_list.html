@@ -58,7 +58,7 @@
     <script id="template" type="text/x-jquery-tmpl">
         <li>
             <span class="nick">
-                ${ nick }
+                ${ nick } says:
             </span>
             <br />
             <span class="message">
@@ -74,7 +74,31 @@
     <style type="text/css">
         body {
             font-family: "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+            text-align:center; /* for IE */
+            margin:0 auto; /* for the rest */
         }
+        .time {
+            font-size: 0.8em;
+        }
+        .message {
+            font-size: 1.4em;
+        }
+        li {
+            list-style: none;
+            border-bottom: 1px solid #d2d2d2;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        table#message_form {
+            font-family: "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            font-weight: normal;
+         }
+         table#message_form th {
+             font-family: "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+             font-size: 14px;
+             font-weight: normal;
+         }
     </style>
 
 </head>
@@ -82,7 +106,7 @@
 
 <form action="{% url pubsub_status_new %}" method="POST">
     {% csrf_token %}
-    <table>
+    <table id="message_form" align="center">
         {{ form.as_table }}
     </table>
     <input type="submit" name="post" value="Post">
@@ -92,7 +116,7 @@
     {% for status in object_list %}
     <li>
         <span class="nick">
-            {{ status.nick }}
+            {{ status.nick }} says:
         </span>
         <br />
         <span class="message">
