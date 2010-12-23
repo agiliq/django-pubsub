@@ -57,28 +57,22 @@
 
     <script id="template" type="text/x-jquery-tmpl">
         <li>
-            ${ nick }
+            <span class="nick">
+                ${ nick }
+            </span>
             <br />
-            ${ message }
+            <span class="message">
+                ${ message }
+            </span>
             <br />
-            ${ time }
+            <span class="time">
+                ${ time }
+            </span>
         </li>
     </script>
 
 </head>
 <body>
-
-<ul>
-    {% for status in object_list %}
-    <li>
-        {{ status.nick }}
-        <br />
-        {{ status.message }}
-        <br />
-        {{ status.time }}
-    </li>
-    {% endfor %}
-</ul>
 
 <form action="{% url pubsub_status_new %}" method="POST">
     {% csrf_token %}
@@ -87,6 +81,24 @@
     </table>
     <input type="submit" name="post" value="Post">
 </form>
+
+<ul>
+    {% for status in object_list %}
+    <li>
+        <span class="nick">
+            {{ status.nick }}
+        </span>
+        <br />
+        <span class="message">
+            {{ status.message }}
+        </span>
+        <br />
+        <span class="time">
+            {{ status.time }}
+        </span>
+    </li>
+    {% endfor %}
+</ul>
 
 </body>
 </html>
