@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 
 from pubsub.utils import publish
-import simplejson
+from django.utils import simplejson
 
 class Status(models.Model):
     """
