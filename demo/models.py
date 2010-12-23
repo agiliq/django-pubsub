@@ -2,8 +2,11 @@ from django.db import models
 
 # Create your models here.
 
-from pubsub.utils import publish
 from django.utils import simplejson
+from django.template.defaultfilters import date
+from django.conf import settings
+
+from pubsub.utils import publish
 
 class Status(models.Model):
     """
@@ -22,7 +25,7 @@ class Status(models.Model):
         payload = {}
         payload['message'] = self.message
         payload['nick'] = self.nick
-        payload['time'] = str(self.time)
+        payload['time'] = date(self.time, settings.DATETIME_FORMAT)
 
         payload_json = simplejson.dumps(payload)
         print payload_json
