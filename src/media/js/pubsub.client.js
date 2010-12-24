@@ -7,11 +7,11 @@
  */
 
 PubSubClient.prototype = {
-    
+
     /* connect to the xmpp server
     *
     * params:
-    *   
+    *
     *   username: username of xmpp account without domain
     *   password: plaintext password of the account
     *
@@ -35,6 +35,19 @@ PubSubClient.prototype = {
             this._nick = this.options.nick;
         }
         return this._conn;
+    },
+
+    /*
+     * Alternative to connect, using BOSH session id
+     *
+     * See: http://metajack.im/2008/10/03/getting-attached-to-strophe/
+     *
+     */
+    attach: function(jid, sid, rid) {
+        this._conn = new Strophe.Connection(settings.BOSH_SERVICE);
+        this._jid = jid;
+        this._nick = this._jid.split("@")[0];
+        return this._conn.attach(jid, sid, rid, this._on_connect(this));
     },
 
     /* disconnect from the xmpp server */
@@ -68,7 +81,7 @@ PubSubClient.prototype = {
     *subscribes user to given node
     */
     subscribe: function(node) {
-        return this._conn.pubsub.subscribe(this._jid, settings.PUBSUB_SERVICE, 
+        return this._conn.pubsub.subscribe(this._jid, settings.PUBSUB_SERVICE,
                 node, {}, this._handle_event(this), this._handle_event(this));
     },
 
@@ -98,7 +111,7 @@ PubSubClient.prototype = {
 
 };
 
-/* PubSubClient class that initializes 
+/* PubSubClient class that initializes
 * event handlers, connects to the server
 *
 * Login Options:
@@ -106,7 +119,7 @@ PubSubClient.prototype = {
 * username: xmpp account username (without domain)
 * password: xmpp account password
 *
-* or 
+* or
 *
 * nick: nick for anonymous login
 *
@@ -114,7 +127,7 @@ PubSubClient.prototype = {
 * PUBSUB Options:
 *
 * node: the node to subscribe and listen for updates
-* event_cb: callback fired when an event occurs in the 
+* event_cb: callback fired when an event occurs in the
 * subscribed node. Takes a single argument which is the
 * payload enclosed in <entry> xml element
 *
