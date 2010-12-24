@@ -128,8 +128,8 @@ PubSubClient.prototype = {
 *
 * node: the node to subscribe and listen for updates
 * event_cb: callback fired when an event occurs in the
-* subscribed node. Takes a single argument which is the
-* payload enclosed in <entry> xml element
+* subscribed node. Has entry with payload as first argument
+* and PubSub object as second argument
 *
 */
 function PubSubClient(options) {
