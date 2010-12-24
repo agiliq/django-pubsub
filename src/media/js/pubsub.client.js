@@ -135,7 +135,13 @@ PubSubClient.prototype = {
 function PubSubClient(options) {
     this.options = options;
     this.updates = new Array();
-    var connection = this.connect(options.username, options.password);
+    var connection = null;
+    if (typeof(options.jid) != 'undefined' &&  options.jid.length) {
+        connection = this.attach(options.jid, options.rid, options.sid);
+    }
+    else {
+        connection = this.connect(options.username, options.password);
+    }
 
     $(window).blur(function(context) {
         return function() {
