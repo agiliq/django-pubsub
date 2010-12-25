@@ -27,7 +27,7 @@ real-time.
 
 Just do::
 
-    from pubusb import pubsub
+    from pubsub import pubsub
 
     pubsub.register(Tweet)
 
