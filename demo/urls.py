@@ -11,7 +11,7 @@ urlpatterns = patterns('',
         'post_save_redirect': '/pubsub',
         }, name='pubsub_status_new'),
     url(r'^$', 'django.views.generic.list_detail.object_list', {
-        'queryset': Status.objects.all()[getattr(settings, 'MAX_STATUSES_NUM', 50)],
+        'queryset': Status.objects.all()[:getattr(settings, 'MAX_STATUSES_NUM', 50)],
         'extra_context': {'form': StatusForm(),
             'unique_nick': time.strftime("%s")}
         }),
