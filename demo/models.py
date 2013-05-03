@@ -29,4 +29,4 @@ class Status(models.Model):
 
         payload_json = simplejson.dumps(payload)
         print payload_json
-        publish("/demo/Status", payload_json)
+        publish("/home/chat.agiliq.com/demo/Status", payload_json)

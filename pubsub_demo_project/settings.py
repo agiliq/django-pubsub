@@ -148,5 +148,5 @@ LOGGING = {
 }
 
 XMPP_PUBSUB_HOST="pubsub.localhost"
-XMPP_JID = "javed@localhost"
-XMPP_PASSWORD = "agiliqchat"
+XMPP_JID = "javed@chat.agiliq.com"
+XMPP_PASSWORD = "javed99"

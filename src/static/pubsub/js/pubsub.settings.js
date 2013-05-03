@@ -6,9 +6,8 @@
  *
  */
 settings = {
-
-    BOSH_SERVICE: '/xmpp-httpbind',
-    DOMAIN: 'localhost',
+    BOSH_SERVICE: 'http://bosh.metajack.im:5280/xmpp-httpbind',
+    DOMAIN: 'chat.agiliq.com',
     RESOURCE: 'strophejs',
     PUBSUB_SERVICE: 'pubsub.localhost',
     DEBUG: true

@@ -61,6 +61,5 @@ def make_node(model):
     E.g. node for 'blog.models.Post'
     would be '/blog/Post'
     """
-    return "/%s/%s" %(model.__module__.split(".")[0],
-            model.__name__)
+    return '/home/chat.agiliq.com/demo/Status'
 
