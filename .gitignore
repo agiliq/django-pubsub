@@ -1,2 +1,4 @@
 *.pyc
 *.pyo
+pubsub_demo_project/logs/
+pubsub_demo_project/static/

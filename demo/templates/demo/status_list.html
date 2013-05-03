@@ -1,18 +1,19 @@
+{% load url from future %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>django-pubsub Demo</title>
 
-    <script type="text/javascript" src="{{ MEDIA_URL }}demo/js/jquery-1.4.4.min.js"></script>
-    <script type="text/javascript" src="{{ MEDIA_URL }}demo/js/jquery-ui-1.8.7.custom.min.js"></script>
-    <script type="text/javascript" src="{{ MEDIA_URL }}demo/js/jquery.tmpl.js"></script>
-    <script type="text/javascript" src="{{ MEDIA_URL }}demo/js/jquery.form.js"></script>
-    <script type="text/javascript" src="{{ MEDIA_URL }}demo/js/jquery.linkify.js"></script>
-    <script type="text/javascript" src="{{ MEDIA_URL }}pubsub/js/strophe.js"></script>
-    <script type="text/javascript" src="{{ MEDIA_URL }}pubsub/js/strophe.pubsub.js"></script>
-    <script type="text/javascript" src="{{ MEDIA_URL }}pubsub/js/pubsub.settings.js"></script>
-    <script type="text/javascript" src="{{ MEDIA_URL }}pubsub/js/pubsub.client.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}demo/js/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}demo/js/jquery-ui-1.8.7.custom.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}demo/js/jquery.tmpl.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}demo/js/jquery.form.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}demo/js/jquery.linkify.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}pubsub/js/strophe.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}pubsub/js/strophe.pubsub.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}pubsub/js/pubsub.settings.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}pubsub/js/pubsub.client.js"></script>
 
     <script type="text/javascript">
         function event_cb(entry, pubsub) {
@@ -105,7 +106,7 @@
 </head>
 <body>
 
-<form action="{% url pubsub_status_new %}" method="POST">
+<form action="{% url 'pubsub_status_new' %}" method="POST">
     {% csrf_token %}
     <table id="message_form" align="center">
         {{ form.as_table }}
